@@ -15,3 +15,14 @@
 .grow:active {
   background-color: #8f73ff;  
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hidebar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

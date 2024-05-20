@@ -17,14 +17,14 @@ export default function Home() {
   }, [messages])
 
   return (
-    <main className="flex flex-col p-3">
+    <main className="flex flex-col p-3 h-screen">
       <div className="h-8">
-        <h1 className=" font-bold text-3xl">AI ASSISTANT</h1>
+        <h1 className="font-bold text-3xl text-center border-b-2 border-black">AI ASSISTANT</h1>
       </div>
-      <MessageBoard />
+      <MessageBoard messages={messages} />
       <TextBar addMessage={addMessage}/>
       <div>
-        <p className="font-thin italic">AI Assistant by Miguel Solano Paz</p>
+        <p className="font-thin italic text-center text-gray-500 mt-1">AI Assistant by Miguel Solano Paz</p>
       </div>
     </main>
   );

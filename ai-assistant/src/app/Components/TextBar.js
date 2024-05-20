@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const TextBar = (prop) => {
 
@@ -7,23 +7,41 @@ const TextBar = (prop) => {
 
     const [prompt, setPrompt] = useState("")
     const changePrompt = (e) => setPrompt(e.target.value)
+    const buttonRef = useRef(null)
 
     useEffect(() => {
-
+        
     }, [prompt])
 
+    const handleKeyPress = (event) => {
+        if(event.key === 'Enter') {
+            buttonRef.current.click()
+            event.preventDefault()
+        }
+    }
+
+    useEffect(() => {
+        const textBar = document.getElementById('promptInput')
+        textBar.addEventListener('keypress', handleKeyPress)
+
+        return () => {
+            textBar.removeEventListener('keypress', handleKeyPress)
+        }
+    }, [])
+
     const sendPrompt = () => {
+        if(prompt.trim() === "") return
         //Display propmt on message board and clear bar
-        addMessage(prompt)
+        addMessage([0, prompt])
         const inputBar = document.getElementById("promptInput")
         inputBar.value = "" 
-        
-        //Do API stuff
+    
+        //API stuff
 
     }
 
     return (
-        <div className="border border-black bg-violet-100 px-2 flex justify-between rounded-full">
+        <div className="border border-black bg-violet-100 px-2 py-1 flex justify-between rounded-full h-14">
             <textarea 
                 id="promptInput" 
                 name="prompt" 
@@ -32,11 +50,11 @@ const TextBar = (prop) => {
                 autoFocus="True"
                 maxLength={3000}
                 onChange={changePrompt}
-                className=" resize-none w-full mx-2 p-2 outline-none bg-transparent"
+                className="hidebar resize-none w-full mx-2 p-2 outline-none bg-transparent"
                 >
                 {prompt}
             </textarea>
-            <button onClick={sendPrompt}>
+            <button ref={buttonRef} id="promptButton" onClick={sendPrompt}>
                 <Image className="grow" src="/images/arrow.svg" alt="Send arrow" width={35} height={35}/>
             </button>
         </div>
