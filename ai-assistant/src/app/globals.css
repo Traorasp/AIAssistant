@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.grow {
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  border-radius: 4rem;
+}
+
+.grow:hover {
+  transform: scale(1.1);
+  background-color: #d1c6ff; 
+}
+
+.grow:active {
+  background-color: #8f73ff;  
+}
