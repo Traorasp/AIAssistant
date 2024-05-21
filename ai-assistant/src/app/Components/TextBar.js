@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 
-const API_KEY = process.env.CHAT_GPT
+const API_KEY = 'sk-proj-9MLGZ4EQIGac83Od39PxT3BlbkFJURP7cjmus8g6cbr7IK0u'
 
 const TextBar = (prop) => {
 
