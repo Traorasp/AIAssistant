@@ -1,13 +1,16 @@
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 
+const API_KEY = process.env.CHAT_GPT
+
 const TextBar = (prop) => {
 
-    const {addMessage} = prop
+    const {changeMessages, messages} = prop
 
     const [prompt, setPrompt] = useState("")
     const changePrompt = (e) => setPrompt(e.target.value)
     const buttonRef = useRef(null)
+
 
     useEffect(() => {
         
@@ -29,15 +32,63 @@ const TextBar = (prop) => {
         }
     }, [])
 
-    const sendPrompt = () => {
-        if(prompt.trim() === "") return
-        //Display propmt on message board and clear bar
-        addMessage([0, prompt])
-        const inputBar = document.getElementById("promptInput")
-        inputBar.value = "" 
-    
-        //API stuff
 
+
+    const sendPrompt = async () => {
+        if(prompt.trim() === "") return
+        const newMessage = {
+            message: prompt,
+            direction: 'outgoing',
+            sender: "user"
+        }
+        let allMessages = [...messages, newMessage]
+        changeMessages(allMessages)
+        setPrompt("")
+
+        await sendToChatGPT(allMessages)
+    }
+
+    const sendToChatGPT = async(allMessages) => {
+        let apiMessages = allMessages.map((messageObject) => {
+            let role = "";
+            if (messageObject.sender === "ChatGPT") {
+              role = "assistant";
+            } else {
+              role = "user";
+            }
+            return { role: role, content: messageObject.message}
+          });
+
+        const systemMessage = { 
+            role: "system",
+            content: "Explain all concepts like I am 10 years old."
+        }
+
+        const apiRequestBody = {
+            "model": "gpt-3.5-turbo",
+            "messages": [
+              systemMessage,  // The system message DEFINES the logic of our chatGPT
+              ...apiMessages // The messages from our chat with ChatGPT
+            ]
+          }
+
+          await fetch("https://api.openai.com/v1/chat/completions", 
+          {
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer " + API_KEY,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(apiRequestBody)
+          }).then((data) => {
+            return data.json();
+          }).then((data) => {
+            const botMessage = {
+                message: data.choices[0].message.content,
+                sender: "ChatGPT"
+            }
+            changeMessages([...allMessages, botMessage])
+          });
     }
 
     return (
@@ -47,12 +98,12 @@ const TextBar = (prop) => {
                 name="prompt" 
                 placeholder="Type prompt here..." 
                 autoCorrect="on" 
-                autoFocus="True"
+                autoFocus="true"
                 maxLength={3000}
                 onChange={changePrompt}
                 className="hidebar resize-none w-full mx-2 p-2 outline-none bg-transparent"
+                value={prompt}
                 >
-                {prompt}
             </textarea>
             <button ref={buttonRef} id="promptButton" onClick={sendPrompt}>
                 <Image className="grow" src="/images/arrow.svg" alt="Send arrow" width={35} height={35}/>

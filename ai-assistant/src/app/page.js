@@ -8,10 +8,8 @@ import TextBar from "./Components/TextBar"
 export default function Home() {
 
   const [messages, setMessages] = useState([])
-  const addMessage = (message) => {
-    setMessages([...messages, message])
-  }
-
+  const changeMessages = (messages) => setMessages(messages)
+  
   useEffect(() => {
     console.log(messages)
   }, [messages])
@@ -22,7 +20,7 @@ export default function Home() {
         <h1 className="font-bold text-3xl text-center border-b-2 border-black">AI ASSISTANT</h1>
       </div>
       <MessageBoard messages={messages} />
-      <TextBar addMessage={addMessage}/>
+      <TextBar changeMessages={changeMessages} messages={messages}/>
       <div>
         <p className="font-thin italic text-center text-gray-500 mt-1">AI Assistant by Miguel Solano Paz</p>
       </div>

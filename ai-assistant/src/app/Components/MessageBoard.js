@@ -18,7 +18,7 @@ const MessageBoard = (props) => {
         <div id="messageBoard" className="flex flex-col gap-2 my-4 h-full h-auto w-full overflow-scroll hidebar">
             {
                 messages ? messages.map((message, count) => (
-                    <Message key={message[0] + "-" + count} sender={message[0]} message={message[1]} />
+                    <Message key={message.sender + "-" + count} sender={message.sender} message={message.message} />
                 )) : ""
             }
         </div>
